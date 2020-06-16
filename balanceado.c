@@ -41,6 +41,7 @@ int my_topmost_level_mpi (int my_rank);
 void run_root_mpi (int a[], int size, int temp[], int max_rank, int tag,
 		   MPI_Comm comm);
 void run_helper_mpi (int my_rank, int max_rank, int tag, MPI_Comm comm);
+void bs(int n, int * vetor);
 int main (int argc, char *argv[]);
 
 int
@@ -201,7 +202,7 @@ mergesort_serial (int a[], int size, int temp[])
   // Switch to insertion sort for small arrays
   if (size <= SMALL)
     {
-      insertion_sort (a, size);
+      bs(size, a);
       return;
     }
   mergesort_serial (a, size / 2, temp);
@@ -261,4 +262,22 @@ insertion_sort (int a[], int size)
 	}
       a[j + 1] = v;
     }
+}
+void bs(int n, int * vetor)
+{
+    int c=0, d, troca, trocou =1;
+
+    while (c < (n-1) & trocou )
+        {
+        trocou = 0;
+        for (d = 0 ; d < n - c - 1; d++)
+            if (vetor[d] > vetor[d+1])
+                {
+                troca      = vetor[d];
+                vetor[d]   = vetor[d+1];
+                vetor[d+1] = troca;
+                trocou = 1;
+                }
+        c++;
+        }
 }
