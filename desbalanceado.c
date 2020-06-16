@@ -3,6 +3,10 @@
 #include "mpi.h"
 
 #define ARRAY_SIZE 1000000
+
+//ACESSO AO LAD - ssh portoalegre\\17103269@sparta.pucrs.br
+//ssh -o PasswordAuthentication=yes ppd59007@grad.lad.pucrs.br
+
 void bs(int n, int * vetor)
 {
     int c=0, d, troca, trocou =1;
