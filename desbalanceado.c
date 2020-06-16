@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include "mpi.h"
 
-#define ARRAY_SIZE 10000
-#define DELTA 2500
+#define ARRAY_SIZE 1000000
 void bs(int n, int * vetor)
 {
     int c=0, d, troca, trocou =1;
@@ -57,7 +56,7 @@ int main(int argc , char **argv)
     int message[ARRAY_SIZE];
     int left, right;
     int father;
-
+    int DELTA;
     int *array_aux; 
     int tam_vetor;
 
@@ -71,6 +70,9 @@ int main(int argc , char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &proc_n);  // pega informacao do numero de processos (quantidade total)
 
     t1 = MPI_Wtime(); //inicio de medicao
+
+    DELTA = ARRAY_SIZE/((proc_n+1)/2);
+    
 
     left = 2*my_rank + 1;
     right = 2*my_rank + 2;
