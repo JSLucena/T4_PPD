@@ -28,7 +28,7 @@
 #include <mpi.h>
 
 // Arrays size <= SMALL switches to insertion sort
-#define SMALL    32
+#define SMALL    250000
 
 extern double get_time (void);
 void merge (int a[], int size, int temp[]);
@@ -53,6 +53,7 @@ main (int argc, char *argv[])
   // number of processes == communicator size
   int comm_size;
   MPI_Comm_size (MPI_COMM_WORLD, &comm_size);
+  
   int my_rank;
   MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
   int max_rank = comm_size - 1;
