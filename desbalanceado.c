@@ -65,7 +65,6 @@ int main(int argc , char **argv)
     int tam_vetor;
 
 
-    //message = (int *)malloc(ARRAY_SIZE * sizeof(int));
 
     
 
@@ -75,12 +74,12 @@ int main(int argc , char **argv)
 
     t1 = MPI_Wtime(); //inicio de medicao
 
-    DELTA = ARRAY_SIZE/((proc_n+1)/2);
+    DELTA = ARRAY_SIZE/((proc_n+1)/2); //calculo dinamico do DELTA baseado na quantidade de processos folha
     
 
     left = 2*my_rank + 1;
     right = 2*my_rank + 2;
-    if(my_rank != 0)
+    if(my_rank != 0) //Recepcao do array, origem e tamanho do array.
     {
         
         MPI_Recv(&message, ARRAY_SIZE, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status); //espera mensagens dos escravos
@@ -90,50 +89,42 @@ int main(int argc , char **argv)
     }
     else
     {
-       // array = malloc(ARRAY_SIZE * sizeof(int));
         tam_vetor = ARRAY_SIZE;
         for(i=0;i<ARRAY_SIZE;i++)
         {
-            message[i] = ARRAY_SIZE - i;
+            message[i] = ARRAY_SIZE - i; //ordenacao do array pelo pior caso
         }
     }
 
-    if(tam_vetor <= DELTA)
+    if(tam_vetor <= DELTA) //ordena o array se ele for menor que o DELTA
     {
-        bs(tam_vetor, message);
+        bs(tam_vetor, message); 
         
     }
-    else
+    else //senao quebra o vetor em 2, manda cada metada para um filho e espera a resposta
     {
         MPI_Send(&message[0], tam_vetor/2, MPI_INT, left, 0,  MPI_COMM_WORLD);
-        //printf("proc %d mandou para %d \n", my_rank, left);
+        
         MPI_Send(&message[tam_vetor/2], tam_vetor/2, MPI_INT, right, 0,  MPI_COMM_WORLD);
-     //   printf("proc %d mandou para %d \n", my_rank, right);
+     
 
         MPI_Recv(&message[0], ARRAY_SIZE, MPI_INT, right, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         MPI_Recv(&message[tam_vetor/2], ARRAY_SIZE, MPI_INT, left, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 
 
         array_aux = interleaving(message,tam_vetor);
-/*
-        for(i = 0; i < tam_vetor;i++)
-        {
-            message[i] =  *array_aux++;
-        }*/
 
          
     }
     
     
-    if(my_rank != 0)
+    if(my_rank != 0) //se nao for o nodo raiz mandamos o vetor de volta
     {
-        MPI_Send(&message[0], tam_vetor, MPI_INT, father, 0,  MPI_COMM_WORLD);
+        MPI_Send(&message[0], tam_vetor, MPI_INT, father, 0,  MPI_COMM_WORLD); 
     }
-    else
+    else //se for o nodo raiz nossa ordenacao esta pronta
     {
         t2 = MPI_Wtime(); //terminamos a medicao
-       // for(i=0;i<ARRAY_SIZE;i++)
-         //  printf("[%03d] ", array_aux[i]);
         
        
         printf("\nTempo de execucao: %f\n\n",t2-t1);
